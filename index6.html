@@ -1,0 +1,481 @@
+<html lang="en"></html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index6</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Center content vertically */
+            height: 100vh; /* Full viewport height */
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .heading {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            position: relative;
+            transition: margin-top 0.3s ease; /* Smooth transition for margin-top */
+            margin-top: 30%;
+        }
+        .heading::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: #333;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .speakers {
+            width: 80%;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Container for Slider and Navigation Buttons */
+        /*.speakers__slider-container {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }*/
+        .speakers__slider-container {
+    overflow-x: hidden; /* Hides any overflow to avoid visual glitches */
+    white-space: nowrap; /* Keeps cards in one line */
+    width: 100%;
+    position: relative;
+}
+
+
+        /* Navigation Buttons */
+        .speakers__nav-button {
+            position: absolute;
+            top: 50%;
+            background-color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            transform: translateY(-50%);
+            width: 50px; 
+            height: 50px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .speakers__nav-button:hover {
+            background-color: #ddd;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            border-color: #333; 
+        }
+
+        .speakers__nav-button--left {
+            left: -52px;
+
+        }
+
+        .speakers__nav-button--right {
+            right: -52px;
+        }
+        .speakers__nav-button i {
+            font-size: 20px; /* Icon size */
+        color: #333; /* Icon color */
+        }
+
+        /* Slider Styles */
+        /*.speakers__slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 1rem;
+            padding: 1rem 0;
+            width: 100%;
+            justify-content: center;
+        }*/
+        .speakers__slider {
+    display: flex;
+    flex-wrap: nowrap; /* Ensures that items don't wrap onto the next line */
+    overflow-x: auto; /* Allows horizontal scrolling if more items are added */
+    scroll-snap-type: x mandatory;
+    gap: 1rem;
+    padding: 1rem 0;
+    width: 100%;
+    justify-content: flex-start; /* Aligns items to the start */
+}
+
+        /* Speaker Cards */
+        .speakers__card {
+            min-width: 200px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            padding: 1rem;
+            scroll-snap-align: start;
+            transition: transform 0.3s ease;
+        }
+
+        .speakers__card:hover {
+            transform: scale(1.05);
+        }
+
+        .speakers__card-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .speakers__card-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .speakers__card-title {
+            font-size: 1rem;
+            color: #666;
+        }
+        /* Popover Styling */
+        .speakers__popover {
+        display:none;
+        position: relative;
+        width: 100%;
+        padding: 10px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transition: opacity 0.3s ease, margin-top 0.5s ease;
+        text-align: center;
+        display: flex; /* Use flexbox to arrange the columns */
+        justify-content: center;
+        }
+
+.speakers__popover.show {
+    display: flex;
+    opacity: 1;
+    margin-top: 40px;
+}
+
+.speakers__popover-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #333;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.speakers__popover-content {
+    display: flex;
+    justify-content: space-around; /* Align the left and right sections */
+    width: 100%;
+    gap: 20px; /* Add space between the two columns */
+}
+
+.speakers__popover-left {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center the items */
+    width: 40%;
+    text-align: center;
+}
+
+.speakers__popover-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 60%;
+    text-align: left;
+}
+
+.speakers__popover-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.speakers__popover-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.speakers__popover-title {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 4px;
+}
+
+.speakers__popover-icons {
+    margin-top: 10px;
+    display: flex;
+    flex-direction:row; /* Stack the icons vertically */
+    gap: 5px; /* Add space between the icons */
+    align-items: center; /* Center the icons */
+}
+
+.speakers__popover-bio {
+    font-size: 16px;
+    color: #777;
+    line-height: 1.5;
+    margin-top: 10px;
+}
+
+        .separator {
+            font-size: 80px;
+            width:3px;
+            margin: 0 15px;
+            background-color: #5c5353;
+        }
+        .program_content {
+            display: flex;
+            margin-left: 50%;
+            align-items:center; 
+            width: 100%; 
+        }
+
+        .program_sub {
+            display: flex;
+            flex-direction: column; 
+            margin-top: 20px;
+        }
+
+        .program_sub p {
+            margin-left: 70px;
+            padding-bottom: 10px;
+        }
+
+        .program {
+            background-color: rgba(0, 0, 255, 0.595);
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: large;
+            margin-top: 100px;
+            width: 300px;
+            cursor: pointer;
+        }
+        .program:hover{
+            background-color: rgba(0, 123, 255, 0.726);
+            color: black;
+            font-size:larger;
+            transform: scale(1.05);
+        }
+
+        .arrow {
+            margin-top: 5px; 
+            width: 100px; 
+            height:50px;
+            margin-left: 100px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .program_content {
+                flex-direction: column; /* Stack content vertically on small screens */
+                align-items: center;
+            }
+
+            .program {
+                width: 100%;
+                margin-top: 20px;
+            }
+
+            .arrow {
+                align-self: center;
+            }
+        }
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .speakers {
+                width: 100%;
+            }
+
+            .speakers__card {
+                min-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    
+    <section class="speakers">
+        <div class="heading">View our Featured Speakers for the Event</div>
+        <p>Speakers are core contributors and industry thought leaders working at <b style="color:rgb(24, 173, 236)">companies</b> that push for innovation.</p>
+        <div class="speakers__popover" aria-hidden="true">
+            <button class="speakers__popover-close" aria-label="Close details">×</button>
+            <div class="speakers__popover-content">
+                <!-- Left Column (Image, Name, Title, Social Icons) -->
+                <div class="speakers__popover-left">
+                    <img class="speakers__popover-image" src="" alt="Speaker Image">
+                    <h3 class="speakers__popover-name"></h3>
+                    <p class="speakers__popover-title"></p>
+                    <p>Specbee</p>
+                    <div class="speakers__popover-icons">
+                        <i class="fa-brands fa-facebook"></i>
+                        <i class="fa-brands fa-twitter"></i>
+                        <i class="fa-brands fa-linkedin"></i>
+                    </div>
+                </div>
+                <hr class="separator">
+        
+                <!-- Right Column (Bio/Information) -->
+                <div class="speakers__popover-right">
+                    <p class="speakers__popover-bio"></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="speakers__slider-container">
+            <button class="speakers__nav-button speakers__nav-button--left" aria-label="Previous speaker">&#10094;</button>
+            
+            <div class="speakers__slider">
+                <!-- Speaker Cards -->
+                <div class="speakers__card" data-name="williams" data-title="Manager" data-bio="Assertively unleash cross-platform best practices rather than pandemic total linkage.Williams is a dynamic Senior Project Manager with over 12 years of experience leading cross-functional teams in the tech and innovation sectors. She has a proven track record of delivering complex projects on time and within budget, ensuring seamless coordination between development, design, and operational teams. Known for her strategic thinking and problem-solving capabilities, Williams excels at managing both people and processes, driving projects from concept to execution with precision." aria-label="Click for more information" tabindex="0">
+                    <img class="speakers__card-image" src="williams.jpeg" alt="williams">
+                    <h3 class="speakers__card-name">williams</h3>
+                    <p class="speakers__card-title">Manager</p>
+                </div>
+                <div class="speakers__card" data-name="James" data-title="Chief Marketing Officer" data-bio="Monotonectally synergize business communities rather than client-centric convergence.James Lee is a seasoned marketing executive with over 15 years of experience leading innovative marketing strategies across various industries. His expertise lies in digital marketing, brand management, and customer engagement. At his current role as Chief Marketing Officer, James has driven significant growth by spearheading global campaigns that enhanced brand recognition and customer loyalty." aria-label="Click for more information" tabindex="2">
+                    <img class="speakers__card-image" src="James.jpeg" alt="James">
+                    <h3 class="speakers__card-name">James</h3>
+                    <p class="speakers__card-title">Chief Marketing Officer</p>
+                </div>
+                <div class="speakers__card" data-name="Mikhel" data-title="Chief Engagement Officer" data-bio="Mikhel is a strategic marketing leader with a decade of experience in developing and executing global marketing campaigns. He specializes in brand building and digital marketing, using data-driven approaches to increase customer engagement. Mikhel's efforts have helped businesses achieve significant market expansion. Known for his leadership, he has led diverse teams in fast-paced environments. Mikhel believes in the power of storytelling and leveraging technology to drive marketing innovation. He is passionate about fostering creativity within teams while delivering measurable business results." aria-label="Click for more information" tabindex="3">
+                    <img class="speakers__card-image" src="Mikhel.jpeg" alt="John Doe">
+                    <h3 class="speakers__card-name">Mikhel</h3>
+                    <p class="speakers__card-title">Chief Engagement Officer</p>
+                </div>
+                <div class="speakers__card" data-name="Natasha" data-title="Developer" data-bio="Natasha is a full-stack developer with a strong background in JavaScript, Python, and cloud technologies. She has been pivotal in designing and implementing scalable web applications for various industries. Her coding proficiency is matched by her ability to collaborate seamlessly with teams, making her a reliable and dynamic contributor. Natasha is known for writing clean, efficient code and solving complex technical challenges. Her passion lies in continuous learning, staying updated with the latest in technology, and enhancing user experiences through innovative development practices." aria-label="Click for more information" tabindex="4">
+                    <img class="speakers__card-image" src="Natasha.jpeg" alt="John Doe">
+                    <h3 class="speakers__card-name">Natasha</h3>
+                    <p class="speakers__card-title">Developer</p>
+                </div>
+                <div class="speakers__card" data-name="Robert" data-title="Tester" data-bio="Robert is a quality assurance expert with over eight years of experience in manual and automated testing. He is highly skilled in identifying bugs and ensuring software products meet the highest standards of reliability and performance. Robert excels in creating thorough test plans and scripts, helping developers resolve issues efficiently. His keen eye for detail and dedication to delivering flawless products have made him a trusted name in the field. Robert is a firm believer in the importance of end-user satisfaction, which drives his commitment to testing excellence." aria-label="Click for more information" tabindex="5">
+                    <img class="speakers__card-image" src="Robert.png" alt="Robert">
+                    <h3 class="speakers__card-name">Robert</h3>
+                    <p class="speakers__card-title"></p>Tester</p>
+                </div>
+                <div class="speakers__card" data-name="Swami"  data-title="Software Developer" data-bio="Swami is a versatile software developer with a knack for building robust and scalable applications. With expertise in multiple programming languages like Java, Python, and C++, he has developed solutions for fintech, healthcare, and e-commerce sectors. Swami is passionate about writing high-quality code and continuously improving his technical skills. His problem-solving mindset allows him to tackle complex software challenges with ease. Swami enjoys collaborating with cross-functional teams and is always eager to learn new tools and technologies to enhance development efficiency." aria-label="Click for more information" tabindex="6">
+                    <img class="speakers__card-image" src="Swami.jpeg" alt="John Doe">
+                    <h3 class="speakers__card-name">Swami</h3>
+                    <p class="speakers__card-title">Software Developer</p>
+                </div>
+                <div class="speakers__card" data-name="Zxeon" data-title="Security Engineer" data-bio="Zxeon is a cybersecurity specialist known for his expertise in protecting digital infrastructures. With years of experience in network security, penetration testing, and vulnerability assessments, he has helped organizations safeguard their data from cyber threats. Zxeon has a deep understanding of cryptography, firewalls, and intrusion detection systems. He is passionate about staying ahead of evolving security risks and implementing proactive security measures. Zxeon also enjoys educating teams on best practices in cybersecurity to ensure comprehensive protection across all levels." aria-label="Click for more information" tabindex="7">
+                    <img class="speakers__card-image" src="Zxeon.jpeg" alt="Zxeon">
+                    <h3 class="speakers__card-name">Zxeon</h3>
+                    <p class="speakers__card-title">Security Engineer</p>
+                </div>
+                <div class="speakers__card" data-name="Rachel" data-title="Devops Engineer" data-bio="Rachel is an experienced DevOps engineer with a strong background in cloud infrastructure, CI/CD pipelines, and automation. She excels in bridging the gap between development and operations, ensuring smooth and efficient software delivery processes. Rachel has played a key role in implementing scalable and resilient systems that improve deployment speed and reliability. Her expertise in tools like Docker, Kubernetes, and Jenkins has enabled teams to enhance collaboration and reduce downtime. Rachel is dedicated to optimizing workflows and ensuring that systems are always running at peak performance." aria-label="Click for more information" tabindex="8">
+                    <img class="speakers__card-image" src="Rachel.jpg" alt="Rachel">
+                    <h3 class="speakers__card-name">Rachel</h3>
+                    <p class="speakers__card-title">Devops Engineer</p>
+                </div>
+                <!-- Add more speaker cards as needed -->
+            </div>
+            
+            <button class="speakers__nav-button speakers__nav-button--right" aria-label="Next speaker">&#10095;</button>
+        </div>
+        <div class="program_content">
+            <div class="program_sub">
+                <p style="width: 200px;">Click here to see full program</p>
+                <img src="arrow2.png" class="arrow" alt="Arrow pointing down">
+            </div>
+            <button class="program">See the Program</button>
+        </div>
+        
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.speakers__card');
+    const popover = document.querySelector('.speakers__popover');
+    const popoverName = popover.querySelector('.speakers__popover-name');
+    const popoverTitle = popover.querySelector('.speakers__popover-title');
+    const popoverBio = popover.querySelector('.speakers__popover-bio');
+    const popoverClose = document.querySelector('.speakers__popover-close');
+    const heading = document.querySelector('.heading');
+    const popoverImage = popover.querySelector('.speakers__popover-image');
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            const name = card.getAttribute('data-name');
+            const image = card.querySelector('.speakers__card-image').src;
+            const title = card.getAttribute('data-title');
+            const bio = card.getAttribute('data-bio');
+
+            // Populate popover with speaker details
+            popoverName.textContent = name;
+            popoverTitle.textContent = title;
+            popoverBio.textContent = bio;
+            popoverImage.src = image;
+
+
+            // Show the popover with a smooth animation
+            popover.style.display = 'block'; // Set display to block to make it visible
+            setTimeout(() => {
+                popover.classList.add('show'); // Add the 'show' class to trigger the smooth transition
+            }, 10); // Small delay to allow display to change before applying the transition
+
+            // Move the heading up
+            heading.style.marginTop = "100px"; // Move heading up when popover is displayed
+        });
+    });
+
+    // Close popover when close button is clicked
+    popoverClose.addEventListener('click', function () {
+        // Remove the 'show' class for smooth closing
+        popover.classList.remove('show');
+
+        // Reset heading position
+        heading.style.marginTop = "0px"; // Reset heading position back to initial
+
+        // Wait for the transition to end, then hide the popover completely
+        setTimeout(() => {
+            popover.style.display = 'none'; // Hide the popover after the transition is finished
+        }, 300); // Match the transition duration
+    });
+
+    // Handle scrolling through the speaker slider
+    const slider = document.querySelector('.speakers__slider');
+    const leftButton = document.querySelector('.speakers__nav-button--left');
+    const rightButton = document.querySelector('.speakers__nav-button--right');
+    const scrollAmount = 300;
+
+    leftButton.addEventListener('click', () => {
+        slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    });
+
+    rightButton.addEventListener('click', () => {
+        slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    });
+});
+
+
+    </script>
+</body>
+</html>
